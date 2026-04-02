@@ -1,0 +1,57 @@
+config:
+  server_port:
+    type: int
+    default: "8080"
+    source: yaml
+  close_timeout:
+    type: duration
+    default: "5s"
+    source: yaml
+  grpc_core_users:
+    type: string
+    default: "localhost:5001"
+    source: yaml
+  grpc_core_health:
+    type: string
+    default: "localhost:5002"
+    source: yaml
+  nats_url:
+    type: string
+    default: "nats://localhost:4222"
+    source: yaml
+  tracer_host:
+    type: string
+    default: "localhost"
+    source: yaml
+  tracer_port:
+    type: string
+    default: "4317"
+    source: yaml
+  service_name:
+    type: string
+    default: "public-api"
+    source: yaml
+  jwt_secret:
+    type: string
+    default: "change-me"
+    source: env
+  cors_origins:
+    type: string
+    default: "http://localhost:4000"
+    source: yaml
+  cors_methods:
+    type: string
+    default: "GET,POST,PATCH,PUT,DELETE,OPTIONS"
+    source: yaml
+  cors_headers:
+    type: string
+    default: "Authorization,Content-Type"
+    source: yaml
+  tg_bot_url:
+    type: string
+    default: "https://t.me/zdravoshag_bot"
+    source: yaml
+  max_bot_url:
+    type: string
+    default: "https://max.ru/zdravoshag_bot"
+    source: yaml
