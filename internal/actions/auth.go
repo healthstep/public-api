@@ -4,7 +4,7 @@ import (
 	"context"
 
 	userspb "github.com/helthtech/core-users/pkg/proto/users"
-	"github.com/helthtech/public-api/inte
+	"github.com/helthtech/public-api/internal/requests"
 	"github.com/porebric/resty/responses"
 )
 
