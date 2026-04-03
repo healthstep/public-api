@@ -16,8 +16,8 @@ func (BrowserChallengeRequest) Methods() []string                { return []stri
 func (BrowserChallengeRequest) Path() (string, bool)             { return "/api/v1/auth/browser-challenge", false }
 func (BrowserChallengeRequest) String() string                   { return "browser-challenge" }
 
-func NewBrowserChallengeRequest(_ context.Context, _ *http.Request) (context.Context, BrowserChallengeRequest, error) {
-	return nil, BrowserChallengeRequest{}, nil
+func NewBrowserChallengeRequest(ctx context.Context, _ *http.Request) (context.Context, BrowserChallengeRequest, error) {
+	return ctx, BrowserChallengeRequest{}, nil
 }
 
 type AuthenticatedRequest struct {
