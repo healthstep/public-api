@@ -8,7 +8,7 @@ import (
 	"strings"
 
 	healthpb "github.com/helthtech/core-health/pkg/proto/health"
-	userspb "github.com/helthtech/core-users/pk
+	userspb "github.com/helthtech/core-users/pkg/proto/users"
 	"github.com/helthtech/public-api/internal/actions"
 	"github.com/helthtech/public-api/internal/middleware"
 	"github.com/helthtech/public-api/internal/natshandler"
