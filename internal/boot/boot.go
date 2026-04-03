@@ -15,6 +15,7 @@ import (
 	"github.com/helthtech/public-api/internal/requests"
 	"github.com/nats-io/nats.go"
 	"github.com/porebric/configs"
+	"github.com/porebric/logger"
 	"github.com/porebric/resty"
 	restyerrors "github.com/porebric/resty/errors"
 	"github.com/porebric/resty/ws"
@@ -66,7 +67,8 @@ func Run(ctx context.Context) error {
 
 	restyerrors.Init(nil)
 
-	router := resty.NewRouter(nil, wsHub)
+	l := logger.New(logger.InfoLevel)
+	router := resty.NewRouter(func() *logger.Logger { return l }, wsHub)
 
 	origins := strings.Split(configs.Value(ctx, "cors_origins").String(), ",")
 	methods := strings.Split(configs.Value(ctx, "cors_methods").String(), ",")
