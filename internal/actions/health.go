@@ -17,21 +17,10 @@ func NewHealthController(healthClient healthpb.HealthServiceClient) *HealthContr
 	return &HealthController{healthClient: healthClient}
 }
 
-func (c *HealthController) ListAnalysis(ctx context.Context, _ requests.ListAnalysisRequest) (responses.Response, int) {
+func (c *HealthController) ListCriteria(ctx context.Context, _ requests.ListCriteriaRequest) (responses.Response, int) {
 	userID := middleware.UserIDFromContext(ctx)
-	resp, err := c.healthClient.ListAnalysis(ctx, &healthpb.ListAnalysisRequest{
-		UserId: userID,
-		// UserSex is resolved server-side from core-users when userID is provided.
-	})
-	if err != nil {
-		return &responses.ErrorResponse{Message: "failed to list analysis"}, 500
-	}
-	return successData(resp.Analyses), 200
-}
-
-func (c *HealthController) ListCriteria(ctx context.Context, req requests.ListCriteriaRequest) (responses.Response, int) {
 	resp, err := c.healthClient.ListCriteria(ctx, &healthpb.ListCriteriaRequest{
-		AnalysisId: req.AnalysisID,
+		UserId: userID,
 	})
 	if err != nil {
 		return &responses.ErrorResponse{Message: "failed to list criteria"}, 500
@@ -70,14 +59,13 @@ func (c *HealthController) GetUserCriteria(ctx context.Context, _ requests.GetUs
 	return successData(resp.Entries), 200
 }
 
-func (c *HealthController) ResetAnalysisCriteria(ctx context.Context, req requests.ResetAnalysisCriteriaRequest) (responses.Response, int) {
+func (c *HealthController) ResetCriteria(ctx context.Context, _ requests.ResetCriteriaRequest) (responses.Response, int) {
 	userID := middleware.UserIDFromContext(ctx)
 	if userID == "" {
 		return &responses.ErrorResponse{Message: "unauthorized"}, 401
 	}
-	resp, err := c.healthClient.ResetAnalysisCriteria(ctx, &healthpb.ResetAnalysisCriteriaRequest{
-		UserId:     userID,
-		AnalysisId: req.AnalysisID,
+	resp, err := c.healthClient.ResetCriteria(ctx, &healthpb.ResetCriteriaRequest{
+		UserId: userID,
 	})
 	if err != nil {
 		return &responses.ErrorResponse{Message: "failed to reset criteria"}, 500

@@ -9,6 +9,7 @@ import (
 	"github.com/helthtech/public-api/internal/middleware"
 )
 
+
 type BrowserChallengeRequest struct{}
 
 func (BrowserChallengeRequest) Validate() (bool, string, string) { return true, "", "" }
@@ -62,48 +63,10 @@ func NewUpdateMeRequest(ctx context.Context, r *http.Request) (context.Context, 
 	return ctx, req, nil
 }
 
-// --- Analysis ---
-
-type ListAnalysisRequest struct {
-	AuthenticatedRequest
-}
-
-func (ListAnalysisRequest) Validate() (bool, string, string) { return true, "", "" }
-func (ListAnalysisRequest) Methods() []string                { return []string{"GET"} }
-func (ListAnalysisRequest) Path() (string, bool)             { return "/api/v1/health/analysis", false }
-func (ListAnalysisRequest) String() string                   { return "list-analysis" }
-
-func NewListAnalysisRequest(ctx context.Context, r *http.Request) (context.Context, ListAnalysisRequest, error) {
-	return ctx, ListAnalysisRequest{AuthenticatedRequest: AuthenticatedRequest{Token: middleware.ExtractBearerToken(r)}}, nil
-}
-
-// --- Reset analysis criteria ---
-
-type ResetAnalysisCriteriaRequest struct {
-	AuthenticatedRequest
-	AnalysisID string `json:"analysis_id"`
-}
-
-func (ResetAnalysisCriteriaRequest) Validate() (bool, string, string) { return true, "", "" }
-func (ResetAnalysisCriteriaRequest) Methods() []string                { return []string{"DELETE"} }
-func (ResetAnalysisCriteriaRequest) Path() (string, bool) {
-	return "/api/v1/health/user-criteria/reset", false
-}
-func (ResetAnalysisCriteriaRequest) String() string { return "reset-analysis-criteria" }
-
-func NewResetAnalysisCriteriaRequest(ctx context.Context, r *http.Request) (context.Context, ResetAnalysisCriteriaRequest, error) {
-	var req ResetAnalysisCriteriaRequest
-	req.Token = middleware.ExtractBearerToken(r)
-	body, _ := io.ReadAll(r.Body)
-	_ = json.Unmarshal(body, &req)
-	return ctx, req, nil
-}
-
 // --- Criteria ---
 
 type ListCriteriaRequest struct {
 	AuthenticatedRequest
-	AnalysisID string
 }
 
 func (ListCriteriaRequest) Validate() (bool, string, string) { return true, "", "" }
@@ -112,9 +75,24 @@ func (ListCriteriaRequest) Path() (string, bool)             { return "/api/v1/h
 func (ListCriteriaRequest) String() string                   { return "list-criteria" }
 
 func NewListCriteriaRequest(ctx context.Context, r *http.Request) (context.Context, ListCriteriaRequest, error) {
-	req := ListCriteriaRequest{AuthenticatedRequest: AuthenticatedRequest{Token: middleware.ExtractBearerToken(r)}}
-	req.AnalysisID = r.URL.Query().Get("analysis_id")
-	return ctx, req, nil
+	return ctx, ListCriteriaRequest{AuthenticatedRequest: AuthenticatedRequest{Token: middleware.ExtractBearerToken(r)}}, nil
+}
+
+// --- Reset all criteria ---
+
+type ResetCriteriaRequest struct {
+	AuthenticatedRequest
+}
+
+func (ResetCriteriaRequest) Validate() (bool, string, string) { return true, "", "" }
+func (ResetCriteriaRequest) Methods() []string                { return []string{"DELETE"} }
+func (ResetCriteriaRequest) Path() (string, bool) {
+	return "/api/v1/health/user-criteria", false
+}
+func (ResetCriteriaRequest) String() string { return "reset-criteria" }
+
+func NewResetCriteriaRequest(ctx context.Context, r *http.Request) (context.Context, ResetCriteriaRequest, error) {
+	return ctx, ResetCriteriaRequest{AuthenticatedRequest: AuthenticatedRequest{Token: middleware.ExtractBearerToken(r)}}, nil
 }
 
 // --- User Criteria ---
