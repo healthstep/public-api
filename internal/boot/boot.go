@@ -85,12 +85,13 @@ func Run(ctx context.Context) error {
 	resty.Endpoint(router, requests.NewBrowserChallengeRequest, authCtrl.BrowserChallenge)
 	resty.Endpoint(router, requests.NewGetMeRequest, userCtrl.GetMe, jwtMW)
 	resty.Endpoint(router, requests.NewUpdateMeRequest, userCtrl.UpdateMe, jwtMW)
+	resty.Endpoint(router, requests.NewListAnalysisRequest, healthCtrl.ListAnalysis, jwtMW)
 	resty.Endpoint(router, requests.NewListCriteriaRequest, healthCtrl.ListCriteria, jwtMW)
-	resty.Endpoint(router, requests.NewListLabTestsRequest, healthCtrl.ListLabTests, jwtMW)
-	resty.Endpoint(router, requests.NewCreateNumericEventRequest, healthCtrl.CreateNumericEvent, jwtMW)
-	resty.Endpoint(router, requests.NewCreateBooleanEventRequest, healthCtrl.CreateBooleanEvent, jwtMW)
-	resty.Endpoint(router, requests.NewCreateMarkDoneEventRequest, healthCtrl.CreateMarkDoneEvent, jwtMW)
-	resty.Endpoint(router, requests.NewGetDashboardRequest, healthCtrl.GetDashboard, jwtMW)
+	resty.Endpoint(router, requests.NewSetUserCriterionRequest, healthCtrl.SetUserCriterion, jwtMW)
+	resty.Endpoint(router, requests.NewGetUserCriteriaRequest, healthCtrl.GetUserCriteria, jwtMW)
+	resty.Endpoint(router, requests.NewGetProgressRequest, healthCtrl.GetProgress, jwtMW)
+	resty.Endpoint(router, requests.NewGetRecommendationsRequest, healthCtrl.GetRecommendations, jwtMW)
+	resty.Endpoint(router, requests.NewResetAnalysisCriteriaRequest, healthCtrl.ResetAnalysisCriteria, jwtMW)
 
 	log.Println("public-api starting")
 	resty.RunServer(ctx, router, func(ctx context.Context) error {

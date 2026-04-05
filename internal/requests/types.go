@@ -62,8 +62,48 @@ func NewUpdateMeRequest(ctx context.Context, r *http.Request) (context.Context, 
 	return ctx, req, nil
 }
 
+// --- Analysis ---
+
+type ListAnalysisRequest struct {
+	AuthenticatedRequest
+}
+
+func (ListAnalysisRequest) Validate() (bool, string, string) { return true, "", "" }
+func (ListAnalysisRequest) Methods() []string                { return []string{"GET"} }
+func (ListAnalysisRequest) Path() (string, bool)             { return "/api/v1/health/analysis", false }
+func (ListAnalysisRequest) String() string                   { return "list-analysis" }
+
+func NewListAnalysisRequest(ctx context.Context, r *http.Request) (context.Context, ListAnalysisRequest, error) {
+	return ctx, ListAnalysisRequest{AuthenticatedRequest: AuthenticatedRequest{Token: middleware.ExtractBearerToken(r)}}, nil
+}
+
+// --- Reset analysis criteria ---
+
+type ResetAnalysisCriteriaRequest struct {
+	AuthenticatedRequest
+	AnalysisID string `json:"analysis_id"`
+}
+
+func (ResetAnalysisCriteriaRequest) Validate() (bool, string, string) { return true, "", "" }
+func (ResetAnalysisCriteriaRequest) Methods() []string                { return []string{"DELETE"} }
+func (ResetAnalysisCriteriaRequest) Path() (string, bool) {
+	return "/api/v1/health/user-criteria/reset", false
+}
+func (ResetAnalysisCriteriaRequest) String() string { return "reset-analysis-criteria" }
+
+func NewResetAnalysisCriteriaRequest(ctx context.Context, r *http.Request) (context.Context, ResetAnalysisCriteriaRequest, error) {
+	var req ResetAnalysisCriteriaRequest
+	req.Token = middleware.ExtractBearerToken(r)
+	body, _ := io.ReadAll(r.Body)
+	_ = json.Unmarshal(body, &req)
+	return ctx, req, nil
+}
+
+// --- Criteria ---
+
 type ListCriteriaRequest struct {
 	AuthenticatedRequest
+	AnalysisID string
 }
 
 func (ListCriteriaRequest) Validate() (bool, string, string) { return true, "", "" }
@@ -72,100 +112,71 @@ func (ListCriteriaRequest) Path() (string, bool)             { return "/api/v1/h
 func (ListCriteriaRequest) String() string                   { return "list-criteria" }
 
 func NewListCriteriaRequest(ctx context.Context, r *http.Request) (context.Context, ListCriteriaRequest, error) {
-	return ctx, ListCriteriaRequest{AuthenticatedRequest: AuthenticatedRequest{Token: middleware.ExtractBearerToken(r)}}, nil
+	req := ListCriteriaRequest{AuthenticatedRequest: AuthenticatedRequest{Token: middleware.ExtractBearerToken(r)}}
+	req.AnalysisID = r.URL.Query().Get("analysis_id")
+	return ctx, req, nil
 }
 
-type ListLabTestsRequest struct {
+// --- User Criteria ---
+
+type SetUserCriterionRequest struct {
 	AuthenticatedRequest
+	CriterionID string `json:"criterion_id"`
+	Value       string `json:"value"`
 }
 
-func (ListLabTestsRequest) Validate() (bool, string, string) { return true, "", "" }
-func (ListLabTestsRequest) Methods() []string                { return []string{"GET"} }
-func (ListLabTestsRequest) Path() (string, bool)             { return "/api/v1/health/lab-tests", false }
-func (ListLabTestsRequest) String() string                   { return "list-lab-tests" }
+func (SetUserCriterionRequest) Validate() (bool, string, string) { return true, "", "" }
+func (SetUserCriterionRequest) Methods() []string                { return []string{"POST"} }
+func (SetUserCriterionRequest) Path() (string, bool)             { return "/api/v1/health/user-criteria", false }
+func (SetUserCriterionRequest) String() string                   { return "set-user-criterion" }
 
-func NewListLabTestsRequest(ctx context.Context, r *http.Request) (context.Context, ListLabTestsRequest, error) {
-	return ctx, ListLabTestsRequest{AuthenticatedRequest: AuthenticatedRequest{Token: middleware.ExtractBearerToken(r)}}, nil
-}
-
-type CreateNumericEventRequest struct {
-	AuthenticatedRequest
-	HealthCriterionID string  `json:"health_criterion_id"`
-	LabTestID         string  `json:"lab_test_id,omitempty"`
-	NumericValue      float64 `json:"numeric_value"`
-	OccurredAt        string  `json:"occurred_at,omitempty"`
-	Note              string  `json:"note,omitempty"`
-}
-
-func (CreateNumericEventRequest) Validate() (bool, string, string) { return true, "", "" }
-func (CreateNumericEventRequest) Methods() []string                { return []string{"POST"} }
-func (CreateNumericEventRequest) Path() (string, bool) {
-	return "/api/v1/health/events/numeric", false
-}
-func (CreateNumericEventRequest) String() string { return "create-numeric-event" }
-
-func NewCreateNumericEventRequest(ctx context.Context, r *http.Request) (context.Context, CreateNumericEventRequest, error) {
-	var req CreateNumericEventRequest
+func NewSetUserCriterionRequest(ctx context.Context, r *http.Request) (context.Context, SetUserCriterionRequest, error) {
+	var req SetUserCriterionRequest
 	req.Token = middleware.ExtractBearerToken(r)
 	body, _ := io.ReadAll(r.Body)
 	_ = json.Unmarshal(body, &req)
 	return ctx, req, nil
 }
 
-type CreateBooleanEventRequest struct {
-	AuthenticatedRequest
-	HealthCriterionID string `json:"health_criterion_id"`
-	BooleanValue      string `json:"boolean_value"`
-	OccurredAt        string `json:"occurred_at,omitempty"`
-	Note              string `json:"note,omitempty"`
-}
-
-func (CreateBooleanEventRequest) Validate() (bool, string, string) { return true, "", "" }
-func (CreateBooleanEventRequest) Methods() []string                { return []string{"POST"} }
-func (CreateBooleanEventRequest) Path() (string, bool) {
-	return "/api/v1/health/events/boolean", false
-}
-func (CreateBooleanEventRequest) String() string { return "create-boolean-event" }
-
-func NewCreateBooleanEventRequest(ctx context.Context, r *http.Request) (context.Context, CreateBooleanEventRequest, error) {
-	var req CreateBooleanEventRequest
-	req.Token = middleware.ExtractBearerToken(r)
-	body, _ := io.ReadAll(r.Body)
-	_ = json.Unmarshal(body, &req)
-	return ctx, req, nil
-}
-
-type CreateMarkDoneEventRequest struct {
-	AuthenticatedRequest
-	HealthCriterionID string `json:"health_criterion_id"`
-	OccurredAt        string `json:"occurred_at,omitempty"`
-	Note              string `json:"note,omitempty"`
-}
-
-func (CreateMarkDoneEventRequest) Validate() (bool, string, string) { return true, "", "" }
-func (CreateMarkDoneEventRequest) Methods() []string                { return []string{"POST"} }
-func (CreateMarkDoneEventRequest) Path() (string, bool) {
-	return "/api/v1/health/events/mark-done", false
-}
-func (CreateMarkDoneEventRequest) String() string { return "create-mark-done-event" }
-
-func NewCreateMarkDoneEventRequest(ctx context.Context, r *http.Request) (context.Context, CreateMarkDoneEventRequest, error) {
-	var req CreateMarkDoneEventRequest
-	req.Token = middleware.ExtractBearerToken(r)
-	body, _ := io.ReadAll(r.Body)
-	_ = json.Unmarshal(body, &req)
-	return ctx, req, nil
-}
-
-type GetDashboardRequest struct {
+type GetUserCriteriaRequest struct {
 	AuthenticatedRequest
 }
 
-func (GetDashboardRequest) Validate() (bool, string, string) { return true, "", "" }
-func (GetDashboardRequest) Methods() []string                { return []string{"GET"} }
-func (GetDashboardRequest) Path() (string, bool)             { return "/api/v1/health/dashboard", false }
-func (GetDashboardRequest) String() string                   { return "get-dashboard" }
+func (GetUserCriteriaRequest) Validate() (bool, string, string) { return true, "", "" }
+func (GetUserCriteriaRequest) Methods() []string                { return []string{"GET"} }
+func (GetUserCriteriaRequest) Path() (string, bool)             { return "/api/v1/health/user-criteria", false }
+func (GetUserCriteriaRequest) String() string                   { return "get-user-criteria" }
 
-func NewGetDashboardRequest(ctx context.Context, r *http.Request) (context.Context, GetDashboardRequest, error) {
-	return ctx, GetDashboardRequest{AuthenticatedRequest: AuthenticatedRequest{Token: middleware.ExtractBearerToken(r)}}, nil
+func NewGetUserCriteriaRequest(ctx context.Context, r *http.Request) (context.Context, GetUserCriteriaRequest, error) {
+	return ctx, GetUserCriteriaRequest{AuthenticatedRequest: AuthenticatedRequest{Token: middleware.ExtractBearerToken(r)}}, nil
+}
+
+// --- Progress & Recommendations ---
+
+type GetProgressRequest struct {
+	AuthenticatedRequest
+}
+
+func (GetProgressRequest) Validate() (bool, string, string) { return true, "", "" }
+func (GetProgressRequest) Methods() []string                { return []string{"GET"} }
+func (GetProgressRequest) Path() (string, bool)             { return "/api/v1/health/progress", false }
+func (GetProgressRequest) String() string                   { return "get-progress" }
+
+func NewGetProgressRequest(ctx context.Context, r *http.Request) (context.Context, GetProgressRequest, error) {
+	return ctx, GetProgressRequest{AuthenticatedRequest: AuthenticatedRequest{Token: middleware.ExtractBearerToken(r)}}, nil
+}
+
+type GetRecommendationsRequest struct {
+	AuthenticatedRequest
+}
+
+func (GetRecommendationsRequest) Validate() (bool, string, string) { return true, "", "" }
+func (GetRecommendationsRequest) Methods() []string                { return []string{"GET"} }
+func (GetRecommendationsRequest) Path() (string, bool) {
+	return "/api/v1/health/recommendations", false
+}
+func (GetRecommendationsRequest) String() string { return "get-recommendations" }
+
+func NewGetRecommendationsRequest(ctx context.Context, r *http.Request) (context.Context, GetRecommendationsRequest, error) {
+	return ctx, GetRecommendationsRequest{AuthenticatedRequest: AuthenticatedRequest{Token: middleware.ExtractBearerToken(r)}}, nil
 }
