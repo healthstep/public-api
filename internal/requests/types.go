@@ -221,8 +221,6 @@ type AdminUpsertRecommendationRequest struct {
 	Title       string   `json:"title"`
 	Texts       []string `json:"texts"`
 	BaseWeight  int32    `json:"base_weight"`
-	MinValue    *float64 `json:"min_value,omitempty"`
-	MaxValue    *float64 `json:"max_value,omitempty"`
 }
 
 func (AdminUpsertRecommendationRequest) Validate() (bool, string, string) { return true, "", "" }
@@ -273,6 +271,9 @@ type AdminUpsertCriterionRequest struct {
 	InputType string   `json:"input_type"`
 	Lifetime  int32    `json:"lifetime"`
 	SortOrder int32    `json:"sort_order"`
+	MinValue  *float64 `json:"min_value,omitempty"`
+	MaxValue  *float64 `json:"max_value,omitempty"`
+	Delta     *float64 `json:"delta,omitempty"`
 }
 
 func (AdminUpsertCriterionRequest) Validate() (bool, string, string) { return true, "", "" }

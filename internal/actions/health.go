@@ -157,8 +157,6 @@ func (c *HealthController) AdminUpsertRecommendation(ctx context.Context, req re
 		Title:       req.Title,
 		Texts:       req.Texts,
 		BaseWeight:  req.BaseWeight,
-		MinValue:    req.MinValue,
-		MaxValue:    req.MaxValue,
 	}
 	resp, err := c.healthClient.AdminUpsertRecommendation(ctx, &healthpb.AdminUpsertRecommendationRequest{
 		Recommendation: pr,
@@ -196,6 +194,9 @@ func (c *HealthController) AdminUpsertCriterion(ctx context.Context, req request
 		InputType: req.InputType,
 		Lifetime:  req.Lifetime,
 		SortOrder: req.SortOrder,
+		MinValue:  req.MinValue,
+		MaxValue:  req.MaxValue,
+		Delta:     req.Delta,
 	}
 	resp, err := c.healthClient.AdminUpsertCriterion(ctx, &healthpb.AdminUpsertCriterionRequest{
 		Criterion: pc,
