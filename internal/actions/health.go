@@ -190,7 +190,6 @@ func (c *HealthController) AdminUpsertCriterion(ctx context.Context, req request
 		Name:      req.Name,
 		Level:     req.Level,
 		Sex:       req.Sex,
-		BlockedBy: req.BlockedBy,
 		InputType: req.InputType,
 		Lifetime:  req.Lifetime,
 		SortOrder: req.SortOrder,

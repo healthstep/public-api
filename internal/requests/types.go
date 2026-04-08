@@ -267,7 +267,6 @@ type AdminUpsertCriterionRequest struct {
 	Name      string   `json:"name"`
 	Level     int32    `json:"level"`
 	Sex       string   `json:"sex"`
-	BlockedBy string   `json:"blocked_by"`
 	InputType string   `json:"input_type"`
 	Lifetime  int32    `json:"lifetime"`
 	SortOrder int32    `json:"sort_order"`
