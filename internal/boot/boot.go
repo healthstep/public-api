@@ -83,6 +83,8 @@ func Run(ctx context.Context) error {
 	healthCtrl := actions.NewHealthController(healthClient, usersClient)
 
 	resty.Endpoint(router, requests.NewBrowserChallengeRequest, authCtrl.BrowserChallenge)
+	resty.Endpoint(router, requests.NewCheckAuthKeyRequest, authCtrl.CheckAuthKey)
+	resty.Endpoint(router, requests.NewLoginWithPasswordRequest, authCtrl.LoginWithPassword)
 	resty.Endpoint(router, requests.NewGetMeRequest, userCtrl.GetMe, jwtMW)
 	resty.Endpoint(router, requests.NewUpdateMeRequest, userCtrl.UpdateMe, jwtMW)
 	resty.Endpoint(router, requests.NewListGroupsRequest, healthCtrl.ListGroups, jwtMW)

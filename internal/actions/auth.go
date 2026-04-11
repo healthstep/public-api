@@ -35,3 +35,41 @@ func (c *AuthController) BrowserChallenge(ctx context.Context, _ requests.Browse
 		MaxBotURL: c.maxBotURL + "?start=" + resp.Key,
 	}), 200
 }
+
+type CheckAuthKeyResponse struct {
+	Token  string `json:"token"`
+	UserID string `json:"user_id"`
+}
+
+func (c *AuthController) CheckAuthKey(ctx context.Context, req requests.CheckAuthKeyRequest) (responses.Response, int) {
+	if req.Key == "" {
+		return &responses.ErrorResponse{Message: "key required"}, 400
+	}
+	resp, err := c.usersClient.CheckAuthToken(ctx, &userspb.CheckAuthTokenRequest{Key: req.Key})
+	if err != nil {
+		return &responses.ErrorResponse{Message: "check failed"}, 500
+	}
+	if resp.Token == "" {
+		return successData(CheckAuthKeyResponse{}), 200
+	}
+	return successData(CheckAuthKeyResponse{Token: resp.Token, UserID: resp.UserId}), 200
+}
+
+type LoginResponse struct {
+	Token  string `json:"token"`
+	UserID string `json:"user_id"`
+}
+
+func (c *AuthController) LoginWithPassword(ctx context.Context, req requests.LoginWithPasswordRequest) (responses.Response, int) {
+	if req.Phone == "" || req.Password == "" {
+		return &responses.ErrorResponse{Message: "phone and password required"}, 400
+	}
+	resp, err := c.usersClient.LoginWithPassword(ctx, &userspb.LoginWithPasswordRequest{
+		PhoneE164: req.Phone,
+		Password:  req.Password,
+	})
+	if err != nil {
+		return &responses.ErrorResponse{Message: "invalid credentials"}, 401
+	}
+	return successData(LoginResponse{Token: resp.Token, UserID: resp.UserId}), 200
+}

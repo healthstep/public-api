@@ -21,6 +21,36 @@ func NewBrowserChallengeRequest(ctx context.Context, _ *http.Request) (context.C
 	return ctx, BrowserChallengeRequest{}, nil
 }
 
+type CheckAuthKeyRequest struct {
+	Key string
+}
+
+func (CheckAuthKeyRequest) Validate() (bool, string, string) { return true, "", "" }
+func (CheckAuthKeyRequest) Methods() []string                { return []string{"GET"} }
+func (CheckAuthKeyRequest) Path() (string, bool)             { return "/api/v1/auth/check", false }
+func (CheckAuthKeyRequest) String() string                   { return "check-auth-key" }
+
+func NewCheckAuthKeyRequest(ctx context.Context, r *http.Request) (context.Context, CheckAuthKeyRequest, error) {
+	return ctx, CheckAuthKeyRequest{Key: r.URL.Query().Get("key")}, nil
+}
+
+type LoginWithPasswordRequest struct {
+	Phone    string `json:"phone"`
+	Password string `json:"password"`
+}
+
+func (LoginWithPasswordRequest) Validate() (bool, string, string) { return true, "", "" }
+func (LoginWithPasswordRequest) Methods() []string                { return []string{"POST"} }
+func (LoginWithPasswordRequest) Path() (string, bool)             { return "/api/v1/auth/login", false }
+func (LoginWithPasswordRequest) String() string                   { return "login-with-password" }
+
+func NewLoginWithPasswordRequest(ctx context.Context, r *http.Request) (context.Context, LoginWithPasswordRequest, error) {
+	var req LoginWithPasswordRequest
+	body, _ := io.ReadAll(r.Body)
+	_ = json.Unmarshal(body, &req)
+	return ctx, req, nil
+}
+
 type AuthenticatedRequest struct {
 	Token  string
 	UserID string
