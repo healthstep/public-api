@@ -48,6 +48,7 @@ func (c *HealthController) SetUserCriterion(ctx context.Context, req requests.Se
 		CriterionId: req.CriterionID,
 		Value:       req.Value,
 		Source:      "web",
+		MeasuredAt:  req.MeasuredAt,
 	})
 	if err != nil {
 		return &responses.ErrorResponse{Message: "failed to set criterion"}, 500

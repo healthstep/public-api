@@ -131,6 +131,7 @@ type SetUserCriterionRequest struct {
 	AuthenticatedRequest
 	CriterionID string `json:"criterion_id"`
 	Value       string `json:"value"`
+	MeasuredAt  string `json:"measured_at"` // optional ISO date "2006-01-02"
 }
 
 func (SetUserCriterionRequest) Validate() (bool, string, string) { return true, "", "" }
