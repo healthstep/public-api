@@ -304,6 +304,8 @@ type AdminUpsertCriterionRequest struct {
 	MinValue  *float64 `json:"min_value,omitempty"`
 	MaxValue  *float64 `json:"max_value,omitempty"`
 	Delta     *float64 `json:"delta,omitempty"`
+	// Instruction describes where to go or what to do to obtain this criterion (labs, clinic, etc.).
+	Instruction string `json:"instruction"`
 }
 
 func (AdminUpsertCriterionRequest) Validate() (bool, string, string) { return true, "", "" }

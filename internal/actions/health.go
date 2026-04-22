@@ -186,17 +186,18 @@ func (c *HealthController) AdminUpsertCriterion(ctx context.Context, req request
 		return &responses.ErrorResponse{Message: "forbidden"}, 403
 	}
 	pc := &healthpb.Criterion{
-		Id:        req.ID,
-		GroupId:   req.GroupID,
-		Name:      req.Name,
-		Level:     req.Level,
-		Sex:       req.Sex,
-		InputType: req.InputType,
-		Lifetime:  req.Lifetime,
-		SortOrder: req.SortOrder,
-		MinValue:  req.MinValue,
-		MaxValue:  req.MaxValue,
-		Delta:     req.Delta,
+		Id:          req.ID,
+		GroupId:     req.GroupID,
+		Name:        req.Name,
+		Level:       req.Level,
+		Sex:         req.Sex,
+		InputType:   req.InputType,
+		Lifetime:    req.Lifetime,
+		SortOrder:   req.SortOrder,
+		MinValue:    req.MinValue,
+		MaxValue:    req.MaxValue,
+		Delta:       req.Delta,
+		Instruction: req.Instruction,
 	}
 	resp, err := c.healthClient.AdminUpsertCriterion(ctx, &healthpb.AdminUpsertCriterionRequest{
 		Criterion: pc,
