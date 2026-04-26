@@ -3,7 +3,6 @@ package boot
 import (
 	"context"
 	"fmt"
-	"log"
 	"net/http"
 	"strings"
 
@@ -12,6 +11,7 @@ import (
 	"github.com/helthtech/public-api/internal/actions"
 	"github.com/helthtech/public-api/internal/middleware"
 	"github.com/helthtech/public-api/internal/natshandler"
+	"github.com/helthtech/public-api/internal/obs"
 	"github.com/helthtech/public-api/internal/requests"
 	"github.com/nats-io/nats.go"
 	"github.com/porebric/configs"
@@ -67,8 +67,8 @@ func Run(ctx context.Context) error {
 
 	restyerrors.Init(nil)
 
-	l := logger.New(logger.InfoLevel)
-	router := resty.NewRouter(func() *logger.Logger { return l }, wsHub)
+	router := resty.NewRouter(func() *logger.Logger { return obs.L }, wsHub)
+	router.MuxRouter().Use(middleware.AccessLog())
 
 	origins := strings.Split(configs.Value(ctx, "cors_origins").String(), ",")
 	methods := strings.Split(configs.Value(ctx, "cors_methods").String(), ",")
@@ -111,7 +111,7 @@ func Run(ctx context.Context) error {
 		"Import lab PDFs", "Multipart form field `files` (up to N PDFs), optional `user_sex` form field.",
 		"", map[int]string{200: "pending_import_id, user_criteria, model_note"}, nil)
 
-	log.Println("public-api starting")
+	obs.L.Info("public-api starting")
 	resty.RunServer(ctx, router, func(ctx context.Context) error {
 		usersConn.Close()
 		healthConn.Close()

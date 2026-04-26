@@ -3,8 +3,8 @@ package natshandler
 import (
 	"context"
 	"encoding/json"
-	"log"
 
+	"github.com/helthtech/public-api/internal/obs"
 	"github.com/nats-io/nats.go"
 	"github.com/porebric/resty/ws"
 )
@@ -27,7 +27,7 @@ func (h *AuthTokenHandler) Subscribe(nc *nats.Conn) error {
 	_, err := nc.Subscribe("auth.token.*", func(msg *nats.Msg) {
 		var m AuthTokenMessage
 		if err := json.Unmarshal(msg.Data, &m); err != nil {
-			log.Printf("nats auth.token unmarshal error: %v", err)
+			obs.BG("nats").Error(err, "nats auth.token unmarshal", "subject", msg.Subject)
 			return
 		}
 
@@ -38,6 +38,7 @@ func (h *AuthTokenHandler) Subscribe(nc *nats.Conn) error {
 		})
 
 		h.hub.SendToClient(context.Background(), m.Key, nil, payload)
+		obs.BG("nats").Info("nats auth.token sent to ws", "key", m.Key, "user_id", m.UserID)
 	})
 	return err
 }
