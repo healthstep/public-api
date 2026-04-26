@@ -97,3 +97,16 @@ func ExtractBearerToken(r *http.Request) string {
 	h = strings.TrimPrefix(h, "bearer ")
 	return h
 }
+
+// UserIDFromHTTP extracts uid from Authorization Bearer on a plain http.Handler.
+func UserIDFromHTTP(r *http.Request, secret string) (string, error) {
+	tok := ExtractBearerToken(r)
+	if tok == "" {
+		return "", fmt.Errorf("missing token")
+	}
+	claims, err := validateJWT(tok, []byte(secret))
+	if err != nil {
+		return "", err
+	}
+	return claims.UserID, nil
+}

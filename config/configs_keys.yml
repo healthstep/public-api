@@ -47,6 +47,10 @@ config:
     type: string
     default: "Authorization,Content-Type"
     source: yaml
+  max_lab_import_files:
+    type: int
+    default: "5"
+    source: yaml
   tg_bot_url:
     type: string
     default: "https://t.me/zdravoshag_bot"

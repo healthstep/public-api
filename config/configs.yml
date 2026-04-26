@@ -10,5 +10,6 @@ jwt_secret: "change-me-to-a-long-random-string"
 cors_origins: "http://localhost:4000,http://localhost:4200"
 cors_methods: "GET,POST,PATCH,PUT,DELETE,OPTIONS"
 cors_headers: "Authorization,Content-Type"
+max_lab_import_files: 5
 tg_bot_url: "https://t.me/zdravoshag_bot"
 max_bot_url: "https://max.ru/zdravoshag_bot"

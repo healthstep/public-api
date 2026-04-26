@@ -80,7 +80,11 @@ func Run(ctx context.Context) error {
 
 	authCtrl := actions.NewAuthController(usersClient, tgBotURL, maxBotURL)
 	userCtrl := actions.NewUserController(usersClient)
-	healthCtrl := actions.NewHealthController(healthClient, usersClient)
+	maxLab := int(configs.Value(ctx, "max_lab_import_files").Int())
+	if maxLab <= 0 {
+		maxLab = 5
+	}
+	healthCtrl := actions.NewHealthController(healthClient, usersClient, jwtSecret, maxLab)
 
 	resty.Endpoint(router, requests.NewBrowserChallengeRequest, authCtrl.BrowserChallenge)
 	resty.Endpoint(router, requests.NewCheckAuthKeyRequest, authCtrl.CheckAuthKey)
@@ -95,11 +99,17 @@ func Run(ctx context.Context) error {
 	resty.Endpoint(router, requests.NewGetRecommendationsRequest, healthCtrl.GetRecommendations, jwtMW)
 	resty.Endpoint(router, requests.NewGetWeeklyRecommendationsRequest, healthCtrl.GetWeeklyRecommendations, jwtMW)
 	resty.Endpoint(router, requests.NewResetCriteriaRequest, healthCtrl.ResetCriteria, jwtMW)
+	resty.Endpoint(router, requests.NewConfirmLabImportRequest, healthCtrl.ConfirmLabImport, jwtMW)
 	// Admin endpoints
 	resty.Endpoint(router, requests.NewAdminListRecommendationsRequest, healthCtrl.AdminListRecommendations, jwtMW)
 	resty.Endpoint(router, requests.NewAdminUpsertRecommendationRequest, healthCtrl.AdminUpsertRecommendation, jwtMW)
 	resty.Endpoint(router, requests.NewAdminDeleteRecommendationRequest, healthCtrl.AdminDeleteRecommendation, jwtMW)
 	resty.Endpoint(router, requests.NewAdminUpsertCriterionRequest, healthCtrl.AdminUpsertCriterion, jwtMW)
+
+	router.MuxRouter().HandleFunc("/api/v1/health/lab-import", healthCtrl.UploadLabDocuments).Methods(http.MethodPost)
+	router.RegisterAppDoc("/api/v1/health/lab-import", []string{http.MethodPost},
+		"Import lab PDFs", "Multipart form field `files` (up to N PDFs), optional `user_sex` form field.",
+		"", map[int]string{200: "pending_import_id, user_criteria, model_note"}, nil)
 
 	log.Println("public-api starting")
 	resty.RunServer(ctx, router, func(ctx context.Context) error {

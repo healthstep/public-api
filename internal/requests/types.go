@@ -130,8 +130,9 @@ func NewResetCriteriaRequest(ctx context.Context, r *http.Request) (context.Cont
 type SetUserCriterionRequest struct {
 	AuthenticatedRequest
 	CriterionID string `json:"criterion_id"`
-	Value       string `json:"value"`
-	MeasuredAt  string `json:"measured_at"` // optional ISO date "2006-01-02"
+	Value         string `json:"value"`
+	MeasuredAt    string `json:"measured_at"` // optional ISO date "2006-01-02"
+	UserSex       string `json:"user_sex"`  // optional: "male" | "female" | ""; used for entry in response (same as GetUserCriteria)
 }
 
 func (SetUserCriterionRequest) Validate() (bool, string, string) { return true, "", "" }
@@ -149,6 +150,7 @@ func NewSetUserCriterionRequest(ctx context.Context, r *http.Request) (context.C
 
 type GetUserCriteriaRequest struct {
 	AuthenticatedRequest
+	UserSex string // query: user_sex (optional)
 }
 
 func (GetUserCriteriaRequest) Validate() (bool, string, string) { return true, "", "" }
@@ -157,7 +159,10 @@ func (GetUserCriteriaRequest) Path() (string, bool)             { return "/api/v
 func (GetUserCriteriaRequest) String() string                   { return "get-user-criteria" }
 
 func NewGetUserCriteriaRequest(ctx context.Context, r *http.Request) (context.Context, GetUserCriteriaRequest, error) {
-	return ctx, GetUserCriteriaRequest{AuthenticatedRequest: AuthenticatedRequest{Token: middleware.ExtractBearerToken(r)}}, nil
+	return ctx, GetUserCriteriaRequest{
+		AuthenticatedRequest: AuthenticatedRequest{Token: middleware.ExtractBearerToken(r)},
+		UserSex:                r.URL.Query().Get("user_sex"),
+	}, nil
 }
 
 // --- Progress & Recommendations ---
@@ -315,6 +320,28 @@ func (AdminUpsertCriterionRequest) String() string                   { return "a
 
 func NewAdminUpsertCriterionRequest(ctx context.Context, r *http.Request) (context.Context, AdminUpsertCriterionRequest, error) {
 	var req AdminUpsertCriterionRequest
+	req.Token = middleware.ExtractBearerToken(r)
+	body, _ := io.ReadAll(r.Body)
+	_ = json.Unmarshal(body, &req)
+	return ctx, req, nil
+}
+
+// --- Lab import (confirm AI-extracted values, staged in Redis) ---
+
+type ConfirmLabImportRequest struct {
+	AuthenticatedRequest
+	PendingID string `json:"pending_id"`
+	Accept    bool   `json:"accept"`
+	UserSex   string `json:"user_sex"`
+}
+
+func (ConfirmLabImportRequest) Validate() (bool, string, string) { return true, "", "" }
+func (ConfirmLabImportRequest) Methods() []string                { return []string{"POST"} }
+func (ConfirmLabImportRequest) Path() (string, bool)             { return "/api/v1/health/lab-import/confirm", false }
+func (ConfirmLabImportRequest) String() string                   { return "confirm-lab-import" }
+
+func NewConfirmLabImportRequest(ctx context.Context, r *http.Request) (context.Context, ConfirmLabImportRequest, error) {
+	var req ConfirmLabImportRequest
 	req.Token = middleware.ExtractBearerToken(r)
 	body, _ := io.ReadAll(r.Body)
 	_ = json.Unmarshal(body, &req)
