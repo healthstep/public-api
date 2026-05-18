@@ -4,8 +4,8 @@ go 1.25.2
 
 require (
 	github.com/golang-jwt/jwt/v5 v5.2.2
-	github.com/helthtech/core-health v0.0.0
-	github.com/helthtech/core-users v0.0.0
+	github.com/helthtech/core-health v0.0.0-20260518140406-f3ef77fb9648
+	github.com/helthtech/core-users v0.0.0-20260518135956-638a581757fc
 	github.com/nats-io/nats.go v1.39.1
 	github.com/porebric/configs v1.0.3
 	github.com/porebric/logger v0.1.0
@@ -52,11 +52,6 @@ require (
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20250218202821-56aae31c358a // indirect
 	google.golang.org/protobuf v1.36.5 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
-)
-
-replace (
-	github.com/helthtech/core-health => ../core-health
-	github.com/helthtech/core-users => ../core-users
 )
 
 exclude google.golang.org/genproto v0.0.0-20230410155749-daa745c078e1

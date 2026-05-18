@@ -132,9 +132,7 @@ func (c *HealthController) GetWeeklyRecommendations(ctx context.Context, _ reque
 	return successData(resp), 200
 }
 
-// --- Admin ---
 
-// ConfirmLabImport applies or discards a pending import from the lab document flow.
 func (c *HealthController) ConfirmLabImport(ctx context.Context, req requests.ConfirmLabImportRequest) (responses.Response, int) {
 	userID := middleware.UserIDFromContext(ctx)
 	if userID == "" {
@@ -161,7 +159,6 @@ func (c *HealthController) ConfirmLabImport(ctx context.Context, req requests.Co
 	return successData(out), 200
 }
 
-// UploadLabDocuments is an HTTP handler (multipart) — not via resty.Endpoint.
 func (c *HealthController) UploadLabDocuments(w http.ResponseWriter, r *http.Request) {
 	uid, err := middleware.UserIDFromHTTP(r, c.jwtSecret)
 	if err != nil {

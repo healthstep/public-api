@@ -94,7 +94,6 @@ func NewUpdateMeRequest(ctx context.Context, r *http.Request) (context.Context, 
 	return ctx, req, nil
 }
 
-// --- Criteria ---
 
 type ListCriteriaRequest struct {
 	AuthenticatedRequest
@@ -109,7 +108,6 @@ func NewListCriteriaRequest(ctx context.Context, r *http.Request) (context.Conte
 	return ctx, ListCriteriaRequest{AuthenticatedRequest: AuthenticatedRequest{Token: middleware.ExtractBearerToken(r)}}, nil
 }
 
-// --- Reset all criteria ---
 
 type ResetCriteriaRequest struct {
 	AuthenticatedRequest
@@ -126,14 +124,13 @@ func NewResetCriteriaRequest(ctx context.Context, r *http.Request) (context.Cont
 	return ctx, ResetCriteriaRequest{AuthenticatedRequest: AuthenticatedRequest{Token: middleware.ExtractBearerToken(r)}}, nil
 }
 
-// --- User Criteria ---
 
 type SetUserCriterionRequest struct {
 	AuthenticatedRequest
 	CriterionID string `json:"criterion_id"`
 	Value         string `json:"value"`
-	MeasuredAt    string `json:"measured_at"` // optional ISO date "2006-01-02"
-	UserSex       string `json:"user_sex"`  // optional: "male" | "female" | ""; used for entry in response (same as GetUserCriteria)
+	MeasuredAt    string `json:"measured_at"`
+	UserSex       string `json:"user_sex"` 
 }
 
 func (SetUserCriterionRequest) Validate() (bool, string, string) { return true, "", "" }
@@ -151,7 +148,7 @@ func NewSetUserCriterionRequest(ctx context.Context, r *http.Request) (context.C
 
 type GetUserCriteriaRequest struct {
 	AuthenticatedRequest
-	UserSex string // query: user_sex (optional)
+	UserSex string
 }
 
 func (GetUserCriteriaRequest) Validate() (bool, string, string) { return true, "", "" }
@@ -166,7 +163,6 @@ func NewGetUserCriteriaRequest(ctx context.Context, r *http.Request) (context.Co
 	}, nil
 }
 
-// --- Progress & Recommendations ---
 
 type GetProgressRequest struct {
 	AuthenticatedRequest
@@ -196,7 +192,6 @@ func NewGetRecommendationsRequest(ctx context.Context, r *http.Request) (context
 	return ctx, GetRecommendationsRequest{AuthenticatedRequest: AuthenticatedRequest{Token: middleware.ExtractBearerToken(r)}}, nil
 }
 
-// --- Weekly Recommendations ---
 
 type GetWeeklyRecommendationsRequest struct {
 	AuthenticatedRequest
@@ -213,7 +208,6 @@ func NewGetWeeklyRecommendationsRequest(ctx context.Context, r *http.Request) (c
 	return ctx, GetWeeklyRecommendationsRequest{AuthenticatedRequest: AuthenticatedRequest{Token: middleware.ExtractBearerToken(r)}}, nil
 }
 
-// --- Groups ---
 
 type ListGroupsRequest struct {
 	AuthenticatedRequest
@@ -228,7 +222,6 @@ func NewListGroupsRequest(ctx context.Context, r *http.Request) (context.Context
 	return ctx, ListGroupsRequest{AuthenticatedRequest: AuthenticatedRequest{Token: middleware.ExtractBearerToken(r)}}, nil
 }
 
-// --- Admin Recommendations ---
 
 type AdminListRecommendationsRequest struct {
 	AuthenticatedRequest
@@ -295,7 +288,6 @@ func NewAdminDeleteRecommendationRequest(ctx context.Context, r *http.Request) (
 	return ctx, req, nil
 }
 
-// --- Admin Criteria ---
 
 type AdminUpsertCriterionRequest struct {
 	AuthenticatedRequest
@@ -326,7 +318,6 @@ func NewAdminUpsertCriterionRequest(ctx context.Context, r *http.Request) (conte
 	return ctx, req, nil
 }
 
-// --- Admin analyses ---
 
 type AdminListAnalysesRequest struct {
 	AuthenticatedRequest
@@ -380,7 +371,6 @@ func NewAdminDeleteAnalysisRequest(ctx context.Context, r *http.Request) (contex
 	}, nil
 }
 
-// --- Lab import (confirm AI-extracted values, staged in Redis) ---
 
 type ConfirmLabImportRequest struct {
 	AuthenticatedRequest

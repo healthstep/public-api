@@ -98,7 +98,6 @@ func ExtractBearerToken(r *http.Request) string {
 	return h
 }
 
-// UserIDFromHTTP extracts uid from Authorization Bearer on a plain http.Handler.
 func UserIDFromHTTP(r *http.Request, secret string) (string, error) {
 	tok := ExtractBearerToken(r)
 	if tok == "" {

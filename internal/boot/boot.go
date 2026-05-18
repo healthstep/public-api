@@ -100,7 +100,6 @@ func Run(ctx context.Context) error {
 	resty.Endpoint(router, requests.NewGetWeeklyRecommendationsRequest, healthCtrl.GetWeeklyRecommendations, jwtMW)
 	resty.Endpoint(router, requests.NewResetCriteriaRequest, healthCtrl.ResetCriteria, jwtMW)
 	resty.Endpoint(router, requests.NewConfirmLabImportRequest, healthCtrl.ConfirmLabImport, jwtMW)
-	// Admin endpoints
 	resty.Endpoint(router, requests.NewAdminListRecommendationsRequest, healthCtrl.AdminListRecommendations, jwtMW)
 	resty.Endpoint(router, requests.NewAdminUpsertRecommendationRequest, healthCtrl.AdminUpsertRecommendation, jwtMW)
 	resty.Endpoint(router, requests.NewAdminDeleteRecommendationRequest, healthCtrl.AdminDeleteRecommendation, jwtMW)

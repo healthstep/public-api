@@ -27,6 +27,10 @@ github.com/gorilla/websocket v1.5.3 h1:saDtZ6Pbx/0u+bgYQ3q96pZgCzfhKXGPqt7kZ72aN
 github.com/gorilla/websocket v1.5.3/go.mod h1:YR8l580nyteQvAITg2hZ9XVh4b55+EU/adAjf1fMHhE=
 github.com/grpc-ecosystem/grpc-gateway/v2 v2.24.0 h1:TmHmbvxPmaegwhDubVz0lICL0J5Ka2vwTzhoePEXsGE=
 github.com/grpc-ecosystem/grpc-gateway/v2 v2.24.0/go.mod h1:qztMSjm835F2bXf+5HKAPIS5qsmQDqZna/PgVt4rWtI=
+github.com/helthtech/core-health v0.0.0-20260518140406-f3ef77fb9648 h1:fKk6zs2bDWUwZt+GZG2tYM3/dL6hoOBodlRcjeVgVYk=
+github.com/helthtech/core-health v0.0.0-20260518140406-f3ef77fb9648/go.mod h1:kxsUI9N5Z7cdlZb4FXXbcRlq2G5c6iuZfskYiYLK3IE=
+github.com/helthtech/core-users v0.0.0-20260518135956-638a581757fc h1:8T/jziI4YOrHlnLcy3HUU5aD0Y6tTd2kAwdgEgh/6Hg=
+github.com/helthtech/core-users v0.0.0-20260518135956-638a581757fc/go.mod h1:YIwjCTv4oyMLR4IVBw4UJ40Q/tTcryWiqKCBtP+iUqA=
 github.com/klauspost/compress v1.17.9 h1:6KIumPrER1LHsvBVuDa0r5xaG0Es51mhhB9BQB2qeMA=
 github.com/klauspost/compress v1.17.9/go.mod h1:Di0epgTjJY877eYKx5yC51cX2A2Vl2ibi7bDH9ttBbw=
 github.com/kr/pretty v0.3.1 h1:flRD4NNwYAUpkphVc1HcthR4KEIFJ65n8Mw5qdRn3LE=
