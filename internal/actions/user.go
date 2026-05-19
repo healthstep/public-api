@@ -50,6 +50,9 @@ func (c *UserController) UpdateMe(ctx context.Context, req requests.UpdateMeRequ
 	if req.Sex != nil {
 		updateReq.Sex = req.Sex
 	}
+	if req.Advanced != nil {
+		updateReq.Advanced = req.Advanced
+	}
 	resp, err := c.usersClient.UpdateUser(ctx, updateReq)
 	if err != nil {
 		return &responses.ErrorResponse{Message: "update failed"}, 500

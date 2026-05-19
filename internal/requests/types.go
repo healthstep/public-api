@@ -79,6 +79,7 @@ type UpdateMeRequest struct {
 	Timezone    *string `json:"timezone,omitempty"`
 	BirthDate   *string `json:"birth_date,omitempty"`
 	Sex         *string `json:"sex,omitempty"`
+	Advanced    *bool   `json:"advanced,omitempty"`
 }
 
 func (UpdateMeRequest) Validate() (bool, string, string) { return true, "", "" }
